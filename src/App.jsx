@@ -1,6 +1,10 @@
 import CharacterDetail from "../components/CharacterDetail";
 import CharacterList from "../components/CharacterList";
-import NavBar, { SearchResult } from "../components/NavBar";
+import NavBar, {
+  FavoriteButton,
+  Search,
+  SearchResult,
+} from "../components/NavBar";
 import "./App.css";
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
@@ -10,15 +14,19 @@ import axios from "axios";
 export default function App() {
   const [characters, setCharacters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState(null);
+  const [favorites, setFavorites] = useState([]);
 
+  // To fetch Data
   useEffect(() => {
     async function fetchData() {
       // Using trycatch for error handling
       try {
-        console.log("Fetching data...");
+        console.log("Fetch ing data...");
         setIsLoading(true);
         const { data } = await axios.get(
-          "https://rickandmortyapi.com/api/character"
+          `https://rickandmortyapi.com/api/character/?name=${query}`
         );
         setCharacters(data.results.slice(0, 5));
         console.log("Data received:", data);
@@ -31,18 +39,46 @@ export default function App() {
     }
 
     fetchData();
-  }, []);
+  }, [query]);
+
+  //To show chatacter detail
+  const handleSelectCharacter = (id) => {
+    setSelectedId((prevId) => (prevId === id ? null : id));
+  };
+  console.log(selectedId);
+
+  const handleAddFavorite = (char) => {
+    setFavorites((preFav) => [...preFav, char]);
+  };
+
+  // dreived prop:
+  const isAddedToFavorite = favorites.map((f) => f.id).includes(selectedId);
+  console.log(isAddedToFavorite);
 
   return (
     <div className="app">
       <Toaster />
       {/* Component Composition for dealing with props drilling */}
       <NavBar>
+        <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
+        <FavoriteButton numOfFavorites={favorites.length} />
       </NavBar>
       <Main>
-        {isLoading ? <Loader /> : <CharacterList characters={characters} />}
-        <CharacterDetail />
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <CharacterList
+            selectedId={selectedId}
+            characters={characters}
+            onSelectCharacter={handleSelectCharacter}
+          />
+        )}
+        <CharacterDetail
+          selectedId={selectedId}
+          onAddFavorite={handleAddFavorite}
+          isAddedToFavorite={isAddedToFavorite}
+        />
       </Main>
     </div>
   );

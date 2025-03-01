@@ -1,9 +1,5 @@
-
-
 function Loader() {
-  return (
-    <div>Loading ... </div>
-  )
+  return <div style={{ flex: 1, color: "white" }}>Loading ... </div>;
 }
 
-export default Loader
+export default Loader;
