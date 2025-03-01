@@ -56,6 +56,7 @@ function CharacterDetail({ selectedId, onAddFavorite, isAddedToFavorite }) {
       <CharacterSubInfo
         character={character}
         isAddedToFavorite={isAddedToFavorite}
+        onAddFavorite={onAddFavorite}
       />
       <EpisodeList episodes={episodes} />
     </div>
@@ -64,7 +65,7 @@ function CharacterDetail({ selectedId, onAddFavorite, isAddedToFavorite }) {
 
 export default CharacterDetail;
 
-function CharacterSubInfo({ character, isAddedToFavorite }) {
+function CharacterSubInfo({ character, onAddFavorite, isAddedToFavorite }) {
   return (
     <div className="character-detail">
       <img

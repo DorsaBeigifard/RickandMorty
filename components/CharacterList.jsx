@@ -5,12 +5,14 @@ function CharacterList({ characters, onSelectCharacter, selectedId }) {
     <div className="characters-list">
       {characters.map((item) => {
         return (
-          <Character
-            selectedId={selectedId}
-            key={item.id}
-            item={item}
-            onSelectCharacter={onSelectCharacter}
-          />
+          <Character key={item.id} item={item}>
+            <button
+              className="icon red"
+              onClick={() => onSelectCharacter(item.id)}
+            >
+              {selectedId === item.id ? <EyeIcon /> : <EyeSlashIcon />}
+            </button>
+          </Character>
         );
       })}
     </div>
@@ -19,15 +21,13 @@ function CharacterList({ characters, onSelectCharacter, selectedId }) {
 
 export default CharacterList;
 
-function Character({ item, onSelectCharacter, selectedId }) {
+export function Character({ item, children }) {
   return (
     <div className="list__item">
       <img src={item.image} alt={item.name} />
       <CharacterName item={item} />
       <CharacterInfo item={item} />
-      <button className="icon red" onClick={() => onSelectCharacter(item.id)}>
-        {selectedId === item.id ? <EyeIcon /> : <EyeSlashIcon />}
-      </button>
+      {children}
     </div>
   );
 }

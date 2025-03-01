@@ -1,10 +1,6 @@
 import CharacterDetail from "../components/CharacterDetail";
 import CharacterList from "../components/CharacterList";
-import NavBar, {
-  FavoriteButton,
-  Search,
-  SearchResult,
-} from "../components/NavBar";
+import NavBar, { Favorite, Search, SearchResult } from "../components/NavBar";
 import "./App.css";
 import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
@@ -58,15 +54,17 @@ export default function App() {
   const handleSelectCharacter = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
-  console.log(selectedId);
 
   const handleAddFavorite = (char) => {
     setFavorites((preFav) => [...preFav, char]);
   };
 
+  const handleDeleteFavorite = (id) => {
+    setFavorites((preFave) => preFave.filter((fav) => fav.id !== id));
+  };
+
   // dreived prop:
   const isAddedToFavorite = favorites.map((f) => f.id).includes(selectedId);
-  console.log(isAddedToFavorite);
 
   return (
     <div className="app">
@@ -75,7 +73,10 @@ export default function App() {
       <NavBar>
         <Search query={query} setQuery={setQuery} />
         <SearchResult numOfResult={characters.length} />
-        <FavoriteButton numOfFavorites={favorites.length} />
+        <Favorite
+          favorites={favorites}
+          onDeleteFavorite={handleDeleteFavorite}
+        />
       </NavBar>
       <Main>
         {isLoading ? (
