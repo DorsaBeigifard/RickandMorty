@@ -12,7 +12,9 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState(
+    () => JSON.parse(localStorage.getItem("Favorites' List")) || []
+  );
 
   // To fetch Data
   useEffect(() => {
@@ -50,19 +52,23 @@ export default function App() {
     };
   }, [query]);
 
+  // save favorites to local storage
+  useEffect(() => {
+    localStorage.setItem("Favorites' List", JSON.stringify(favorites));
+  }, [favorites]);
+
   //To show chatacter detail
   const handleSelectCharacter = (id) => {
     setSelectedId((prevId) => (prevId === id ? null : id));
   };
 
+  // favotites
   const handleAddFavorite = (char) => {
     setFavorites((preFav) => [...preFav, char]);
   };
-
   const handleDeleteFavorite = (id) => {
     setFavorites((preFave) => preFave.filter((fav) => fav.id !== id));
   };
-
   // dreived prop:
   const isAddedToFavorite = favorites.map((f) => f.id).includes(selectedId);
 
