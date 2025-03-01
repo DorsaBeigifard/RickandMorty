@@ -20,25 +20,38 @@ export default function App() {
 
   // To fetch Data
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     async function fetchData() {
       // Using trycatch for error handling
       try {
         console.log("Fetch ing data...");
         setIsLoading(true);
         const { data } = await axios.get(
-          `https://rickandmortyapi.com/api/character/?name=${query}`
+          `https://rickandmortyapi.com/api/character/?name=${query}`,
+          { signal }
         );
         setCharacters(data.results.slice(0, 5));
         console.log("Data received:", data);
       } catch (error) {
-        console.log(error.response.data.error);
-        toast.error(error.response.data.error);
+        if (axios.isCancel(error)) {
+          console.log("successfully aborted");
+        } else {
+          console.log(error.response.data.error);
+          toast.error(error.response.data.error);
+        }
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchData();
+    // CleanUp function
+    return () => {
+      // cancel the request before component unmounts
+      controller.abort();
+    };
   }, [query]);
 
   //To show chatacter detail
