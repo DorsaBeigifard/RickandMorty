@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import Loader from "../components/Loader";
 import useCharacters from "./hooks/useCharacters";
 import toast, { Toaster } from "react-hot-toast";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 export default function App() {
   const [query, setQuery] = useState("");
@@ -15,16 +16,8 @@ export default function App() {
     query
   );
   const [selectedId, setSelectedId] = useState(null);
-  const [favorites, setFavorites] = useState(
-    () => JSON.parse(localStorage.getItem("Favorites' List")) || []
-  );
 
-  // To fetch Data
-
-  // save favorites to local storage
-  useEffect(() => {
-    localStorage.setItem("Favorites' List", JSON.stringify(favorites));
-  }, [favorites]);
+  const [favorites, setFavorites] = useLocalStorage("Favorites", []);
 
   //To show chatacter detail
   const handleSelectCharacter = (id) => {
